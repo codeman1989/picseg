@@ -113,6 +113,9 @@
         </div>
         <!-- Main Content -->
         <div class="main-container">
+			<div class="ui dimmer">
+				<div class="ui text loader">Download SAM model...</div>
+			</div>
             <!-- Sidebar -->
             <div class="sidebar">
                 <h4 class="ui header">Tools</h4>
@@ -160,12 +163,15 @@
 
             </div>
             <!-- Content -->
+			
             <div class="content">
+				
                 <div class="ui message" id="status">Everything operates within your browser. No image uploading is required.</div>
-                <div class="image-container">
+				<div class="image-container">
                     <canvas id="canvas"></canvas>
                     <img src="https://via.placeholder.com/1024x1024" alt="Image" id="original-image">
                 </div>
+				
             </div>
         </div>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -180,7 +186,10 @@
             var points_label = []
             var img_save;
             var activeIndex = 0;
+			var mask;
             var canvas = document.getElementById('canvas');
+			var session;
+			var decodingSession;
 			
             $(document).ready(function() {
                 // Trigger file input when upload button is clicked
@@ -228,15 +237,14 @@
                     let ctx = canvas.getContext('2d');
 					ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 					ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
-					ctx.fillStyle = 'white';
-					ctx.globalCompositeOperation = 'destination-over';
-					ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-					ctx.globalCompositeOperation = 'source-over';
+					
                 }
                 $('.ui.accordion').accordion({
                     exclusive: true
                 }).accordion({
                     onOpen: function() {
+						points = [];
+						points_label = [];
                         activeIndex = $(this).index();
                         clearCanvas();
                     }
@@ -246,27 +254,7 @@
                     points_label = [];
                     clearCanvas();
                 });
-                async function handleRightClick(event) {
-                    console.log(event);
-                    event.preventDefault();
-                    const rect = canvas.getBoundingClientRect();
-                    const x = event.clientX - rect.left;
-                    const y = event.clientY - rect.top;
-                    let context = canvas.getContext('2d');
-                    context.fillStyle = 'blue';
-                    context.fillRect(x, y, 10, 10);
-                    if (activeIndex == 3) {
-                        points.push(x, y);
-                        points_label.push(0);
-                    } else {
-                        points = [];
-                        points_label = [];
-                        points.push(x, y);
-                        points_label.push(0);
-                    }
-                    console.log('points', points, points_label);
-                    decode();
-                }
+                
 
                 function renderPoints(context) {
                     for (let i = 0; i < points.length; i += 2) {
@@ -279,29 +267,69 @@
                     }
                 }
                 async function handleClick(event) {
+					event.preventDefault();
+					
+					let img = img_save;
+                    const scaleX = dimension / img.width;
+                    const scaleY = dimension / img.height;
+                    let canvasWidth = canvas.width;
+                    let canvasHeight = canvas.height;
+                    let imgAspectRatio = img.width / img.height;
+                    // calculate the drawing dimensions
+                    let drawWidth, drawHeight;
+                    if (canvasWidth / imgAspectRatio < canvasHeight) {
+                        drawWidth = canvasWidth;
+                        drawHeight = canvasWidth / imgAspectRatio;
+                    } else {
+                        drawHeight = canvasHeight;
+                        drawWidth = canvasHeight * imgAspectRatio;
+                    }
+                    // calculate the starting position
+                    let drawX = (canvasWidth - drawWidth) / 2;
+                    let drawY = (canvasHeight - drawHeight) / 2;
+                    
+					
                     console.log(event);
                     const rect = canvas.getBoundingClientRect();
-                    const x = event.clientX - rect.left;
-                    const y = event.clientY - rect.top;
+                    const x = (event.clientX - rect.left);
+                    const y = (event.clientY - rect.top);
                     console.log('Clicked position:', x, y);
                     document.getElementById("status").textContent = `Clicked on (${x}, ${y}). Downloading the decoder model if needed and generating mask...`;
                     let context = canvas.getContext('2d');
                     context.clearRect(0, 0, canvas.width, canvas.height);
                     //canvas.width = imageImageData.width;
                     //canvas.height = imageImageData.height;
-                    context.putImageData(imageImageData, 0, 0);
-                    context.fillStyle = 'green';
-                    context.fillRect(x, y, 10, 10);
+                    
+                    // 
+                    let ctx = canvas.getContext('2d');
+					ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+					ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+                    
+                    
                     if (activeIndex == 3) {
                         points.push(x, y);
-                        points_label.push(1);
+						if(event.type == "click"){
+							points_label.push(1);
+							context.fillStyle = 'green';
+						}else{
+							points_label.push(0);
+							context.fillStyle = 'blue';
+						}
+                        
                     } else {
                         points = [];
                         points_label = [];
                         points.push(x, y);
-                        points_label.push(1);
+                        if(event.type == "click"){
+							points_label.push(1);
+							context.fillStyle = 'green';
+						}else{
+							points_label.push(0);
+							context.fillStyle = 'blue';
+						}
                     }
-                    console.log('points', points, points_label);
+					context.fillRect(x, y, 10, 10);
+                    
                     decode();
                 }
                 async function decode() {
@@ -312,10 +340,8 @@
                     const maskInput = new ort.Tensor(new Float32Array(256 * 256), [1, 1, 256, 256]);
                     const hasMask = new ort.Tensor(new Float32Array([0]), [1, ]);
                     const origianlImageSize = new ort.Tensor(new Float32Array([1024, 1024]), [2, ]);
-                    const decodingSession = await ort.InferenceSession.create('https://cdn.picseg.com/vit_t_decoder.onnx', {
-                        executionProviders: ['webgpu', 'cpu']
-                    });
-                    console.log("Decoder session", decodingSession);
+                    
+              
                     const decodingFeeds = {
                         "image_embedding": image_embeddings,
                         "point_coords": pointCoords,
@@ -331,10 +357,36 @@
                         console.log("Generated mask:", results);
                         const mask = results.masks;
                         const maskImageData = mask.toImageData();
+						
                         context.globalAlpha = 0.3;
                         // convert image data to image bitmap
                         let imageBitmap = await createImageBitmap(maskImageData);
-                        context.drawImage(imageBitmap, 0, 0);
+						
+						let img = img_save;
+						const scaleX = dimension / img.width;
+						const scaleY = dimension / img.height;
+						let canvasWidth = canvas.width;
+						let canvasHeight = canvas.height;
+						let imgAspectRatio = img.width / img.height;
+						// calculate the drawing dimensions
+						let drawWidth, drawHeight;
+						if (canvasWidth / imgAspectRatio < canvasHeight) {
+							drawWidth = canvasWidth;
+							drawHeight = canvasWidth / imgAspectRatio;
+						} else {
+							drawHeight = canvasHeight;
+							drawWidth = canvasHeight * imgAspectRatio;
+						}
+						// calculate the starting position
+						let drawX = (canvasWidth - drawWidth) / 2;
+						let drawY = (canvasHeight - drawHeight) / 2;
+						
+						// 
+						let ctx = canvas.getContext('2d');
+						clearCanvas();
+						//ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+						ctx.drawImage(imageBitmap, drawX, drawY, drawWidth, drawHeight);
+                        //context.drawImage(imageBitmap, 0, 0);
                     } catch (error) {
                         console.log(`caught error: ${error}`)
                     }
@@ -343,6 +395,16 @@
                     document.getElementById("status").textContent = `Mask generated. Click on the image to generate new mask.`;
                     renderPoints(context)
                 }
+				async function loadmodel() {
+					$('.ui.dimmer').dimmer('show');
+					session = await ort.InferenceSession.create('https://cdn.picseg.com/vit_t_encoder.onnx', {
+                        executionProviders: ['webgpu', 'cpu']
+                    });
+					decodingSession = await ort.InferenceSession.create('https://cdn.picseg.com/vit_t_decoder.onnx', {
+                        executionProviders: ['webgpu', 'cpu']
+                    });
+					$('.ui.dimmer').dimmer('hide');
+				}
                 async function handleImage(img) {
                     img_save = img;
                     document.getElementById("status").textContent = `Downloading the encoder model (~30 MB) if not cached and generating embedding. this will take a minute...`;
@@ -372,19 +434,17 @@
                     let drawX = (canvasWidth - drawWidth) / 2;
                     let drawY = (canvasHeight - drawHeight) / 2;
                     let context = canvas.getContext('2d');
-                    // 清除任何之前的内容
+                    // 
                     let ctx = canvas.getContext('2d');
                     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-                    // 填满白色背景
+                    // 
                     ctx.fillStyle = 'white';
                     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
                     ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
                     let tf_tensor = tf.tensor(imageDataTensor.data, imageDataTensor.dims);
                     tf_tensor = tf_tensor.reshape([1, 3, 1024, 1024]);
                     imageDataTensor = new ort.Tensor(tf_tensor.dataSync(), tf_tensor.shape);
-                    const session = await ort.InferenceSession.create('https://cdn.picseg.com/vit_t_encoder.onnx', {
-                        executionProviders: ['webgpu', 'cpu']
-                    });
+                    await loadmodel();
                     console.log("Encoder Session", session);
                     const feeds = {
                         "image": imageDataTensor
@@ -411,7 +471,7 @@
                     console.log(`Computing image embedding took ${time_taken} seconds`);
                     document.getElementById("status").textContent = `Embedding generated in ${time_taken} seconds. Running in  ${dv}.Click on the image to generate mask.`;
                     canvas.addEventListener('click', handleClick);
-                    canvas.addEventListener('contextmenu', handleRightClick);
+                    canvas.addEventListener('contextmenu', handleClick);
                 }
 
                 function loadImage(fileReader) {
