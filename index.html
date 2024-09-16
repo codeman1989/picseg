@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
  <head> 
-  <title>Awesome Splitting Tool!</title> 
-  <meta charset="UTF-8" /> 
+  <title>Awesome Image Segmentation Tool!</title>
+  <meta charset="UTF-8" />
+  <!-- Meta Tags For SEO -->
+  <meta name="description" content="The best offline free image segmentation tool that provide quick, painless, and user-friendly experience." />
+  <meta name="keywords" content="Image Segmentation, Offline Tool, Efficient, User-friendly, Privacy Preserving, Free" />
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" /> 
   <style>body { padding: 0 2em 2em 2em; background-color: #f5f5f5; text-align: center; }a { transition: color 0.2s; }  a:hover { color: blue; }  h1 { color: #333; font-size: 2.5em; } h3 { color: #666; font-size: 2em; } button { transition: background-color 0.3s ease; } button:hover { background-color: blue; color: white; } img { margin: 2em 0; } h3.ui.header { color: #666; } .ui.comments { width: 100%; }
 		
@@ -26,8 +29,8 @@
   <div class="ui inverted vertical masthead center aligned segment"> 
    <div class="ui container"> 
     <div class="ui large secondary inverted pointing menu"> 
-     <a class="active item">Pic Seg</a> 
-     <a class="item">Paper</a> 
+     <a class="active item" href="#" aria-label="Home">Pic Seg</a>
+     <a class="item" href="https://arxiv.org/abs/2304.02643">Paper</a> 
     </div> 
    </div> 
    <div class="ui text container"> 
@@ -42,7 +45,7 @@
     <div class="ui huge primary button">
      Go 
      <i class="right arrow icon"></i>
-    </div
+    </div>
 	</a>
    </div> 
   </div> 
@@ -59,8 +62,8 @@
       <p>Since it is an offline model, you can use it without hindrance even if the network is disconnected. </p> 
      </div> 
      <div class="eight wide column"> 
-      <h3 class="ui header">Save network traffic</h3> 
-      <p>No need to upload images, saving your network traffic. </p> 
+      <h3 class="ui header">Free</h3> 
+      <p>No need to pay anything. </p> 
       <h3 class="ui header">User-friendly</h3> 
       <p>Easy to use, quick to get started.</p> 
       
@@ -72,8 +75,8 @@
    </div> 
   </div> 
   <img-comparison-slider> 
-   <img slot="first" src="./assets/before.webp" /> 
-   <img slot="second" src="./assets/after.webp" />
+   <img slot="first" src="./assets/before.webp"  alt="Image Before Segmentation" /> 
+   <img slot="second" src="./assets/after.webp" alt="Image After Segmentation" />
   </img-comparison-slider> 
   <!-- Comments section using article and section for better semantics --> 
   <div class="center-container"> 
@@ -148,7 +151,7 @@
    <div class="ui text container"> 
     <h3 class="ui header">We're all here to help you</h3> 
     <p>If you have any questions or encounter difficulties, please contact us..</p> 
-    <a href="mailto:admin@picseg.com"> <button class="ui large button">Contact us</button> </a> 
+    <a href="mailto:admin@picseg.com" aria-label="Email us for support"> <button class="ui large button">Contact us</button> </a> 
    </div> 
   </div> 
   <!-- Footer --> 
