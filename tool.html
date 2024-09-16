@@ -224,13 +224,14 @@
                     let drawX = (canvasWidth - drawWidth) / 2;
                     let drawY = (canvasHeight - drawHeight) / 2;
                     let context = canvas.getContext('2d');
-                    // 清除任何之前的内容
+                    // 
                     let ctx = canvas.getContext('2d');
-                    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-                    // 填满白色背景
-                    ctx.fillStyle = 'white';
-                    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-                    ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+					ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+					ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+					ctx.fillStyle = 'white';
+					ctx.globalCompositeOperation = 'destination-over';
+					ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+					ctx.globalCompositeOperation = 'source-over';
                 }
                 $('.ui.accordion').accordion({
                     exclusive: true
