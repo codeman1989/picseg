@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <title>Awesome Splitting Tool!</title> 
+  <meta charset="UTF-8" /> 
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" /> 
+  <style>body { padding: 0 2em 2em 2em; background-color: #f5f5f5; text-align: center; }a { transition: color 0.2s; }  a:hover { color: blue; }  h1 { color: #333; font-size: 2.5em; } h3 { color: #666; font-size: 2em; } button { transition: background-color 0.3s ease; } button:hover { background-color: blue; color: white; } img { margin: 2em 0; } h3.ui.header { color: #666; } .ui.comments { width: 100%; }
+		
+		.center-container {
+    display: flex;
+    justify-content: center;
+}
+.ui.comments {
+    display: inline-block;
+    text-align: left;
+}
+:focus {
+    outline: none;
+}
+</style> 
+  <script defer="" src="https://cdn.jsdelivr.net/npm/img-comparison-slider@8/dist/index.js"></script> 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/img-comparison-slider@8/dist/styles.css" />
+ </head> 
+ <body> 
+  <!-- Header --> 
+  <div class="ui inverted vertical masthead center aligned segment"> 
+   <div class="ui container"> 
+    <div class="ui large secondary inverted pointing menu"> 
+     <a class="active item">Pic Seg</a> 
+     <a class="item">Paper</a> 
+    </div> 
+   </div> 
+   <div class="ui text container"> 
+    <h1 class="ui inverted stackable header"> 
+     <div class="content">
+      Your Segmentation Tool 
+      <div class="sub header">
+       Make segmentation simple, effective and painless
+      </div>
+     </div> </h1> 
+    <div class="ui huge primary button">
+     Go 
+     <i class="right arrow icon"></i>
+    </div> 
+   </div> 
+  </div> 
+  <!-- Features --> 
+  <div class="ui vertical stripe segment"> 
+   <div class="ui middle aligned stackable grid container"> 
+    <div class="row"> 
+     <div class="eight wide column"> 
+      <h3 class="ui header">Good privacy</h3> 
+      <p>Do not upload images to the server, completely localized processing.</p> 
+      <h3 class="ui header">Offline mode</h3> 
+      <p>Our segmentation model is completely offline.</p> 
+      <h3 class="ui header">Available at all times</h3> 
+      <p>Since it is an offline model, you can use it without hindrance even if the network is disconnected. </p> 
+     </div> 
+     <div class="eight wide column"> 
+      <h3 class="ui header">Save network traffic</h3> 
+      <p>No need to upload images, saving your network traffic. </p> 
+      <h3 class="ui header">User-friendly</h3> 
+      <p>Easy to use, quick to get started.</p> 
+      
+	  
+	  <h3 class="ui header">We provide the most efficient segmentation tool</h3> 
+      <p>Our tool is based on the latest technology and can help you segment efficiently with minimal effort. </p> 
+     </div> 
+    </div> 
+   </div> 
+  </div> 
+  <img-comparison-slider> 
+   <img slot="first" src="./assets/before.webp" /> 
+   <img slot="second" src="./assets/after.webp" />
+  </img-comparison-slider> 
+  <!-- Comments section using article and section for better semantics --> 
+  <div class="center-container"> 
+   <div class="ui threaded comments"> 
+    <h3 class="ui dividing header">Comments</h3> 
+    <div class="comment"> 
+     <a class="avatar"> <img src="/assets/matt.jpg" /></a> 
+     <div class="content"> 
+      <a class="author">Matt</a> 
+      <div class="metadata"> 
+       <span class="date">Today 5:42 AM</span>
+      </div> 
+      <div class="text">
+       Awesome!
+      </div> 
+      <div class="actions"> 
+       <a class="reply">Reply</a>
+      </div> 
+     </div> 
+    </div> 
+    <div class="comment"> 
+     <a class="avatar"> <img src="/assets/elliot.jpg" /></a> 
+     <div class="content"> 
+      <a class="author">Elliot Fu</a> 
+      <div class="metadata"> 
+       <span class="date">Years today 12:30 PM</span>
+      </div> 
+      <div class="text"> 
+       <p>This is very useful for my research. Thank you!</p> 
+      </div> 
+      <div class="actions"> 
+       <a class="reply">Reply</a>
+      </div> 
+     </div> 
+     <div class="comments"> 
+      <div class="comment"> 
+       <a class="avatar"> <img src="/assets/jenny.jpg" /></a> 
+       <div class="content"> 
+        <a class="author">Jenny Hess</a> 
+        <div class="metadata"> 
+         <span class="date">Just Now</span>
+        </div> 
+        <div class="text">
+         Man, this is awesome. Thank you so much.... :)
+        </div> 
+        <div class="actions"> 
+         <a class="reply">Reply</a>
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </div> 
+    <div class="comment"> 
+     <a class="avatar"> <img src="/assets/joe.jpg" /></a> 
+     <div class="content"> 
+      <a class="author">Joe Henderson</a> 
+      <div class="metadata"> 
+       <span class="date">Five days ago</span>
+      </div> 
+      <div class="text">
+       Dude, this is awesome. Thank you so much.
+      </div> 
+      <div class="actions"> 
+       <a class="reply">Reply</a>
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+  </div> 
+  <!-- Contact Us --> 
+  <div class="ui vertical stripe segment"> 
+   <div class="ui text container"> 
+    <h3 class="ui header">We're all here to help you</h3> 
+    <p>If you have any questions or encounter difficulties, please contact us..</p> 
+    <a href="mailto:admin@picseg.com"> <button class="ui large button">Contact us</button> </a> 
+   </div> 
+  </div> 
+  <!-- Footer --> 
+  <div class="ui inverted vertical footer segment"> 
+   <div class="ui container"> 
+    <div class="ui stackable inverted divided equal height stackable grid" style="display: flex; justify-content: flex-end;"> 
+     <div class="three wide column"> 
+      <h3 class="ui inverted header">2024</h3> 
+     </div> 
+    </div> 
+   </div> 
+  </div> 
+  <!-- Scripts --> 
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>  
+ </body>
+</html>
