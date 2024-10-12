@@ -372,7 +372,7 @@
                         const mask = results.masks;
                         const maskImageData = mask.toImageData();
 						
-                        context.globalAlpha = 0.3;
+                        
                         // convert image data to image bitmap
                         let imageBitmap = await createImageBitmap(maskImageData);
 						console.log('imageBitmap',imageBitmap);
@@ -398,9 +398,10 @@
 						// 
 						let ctx = canvas.getContext('2d');
 						clearCanvas();
+						context.globalAlpha = 0.3;
 						let mask_w = 0;
 						let mask_h = 0;
-						if (canvasWidth / imgAspectRatio < canvasHeight) {
+						if (canvasWidth / imgAspectRatio > canvasHeight) {
 							mask_w = 1024/img.width*drawWidth;
 							mask_h = drawHeight;
 						}else{
