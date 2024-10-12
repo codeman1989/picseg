@@ -407,9 +407,12 @@
 						}
 						
 						if(imgAspectRatio==1){
+						drawX = 0;
+						drawY = 0;
 						mask_w= drawWidth;
-						mask_h=drawHeight;
+						mask_h= drawHeight;
 						}
+						console.log(drawX, drawY, mask_w, mask_h);
 						//ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 						ctx.drawImage(imageBitmap, drawX, drawY, mask_w, mask_h);
                         //context.drawImage(imageBitmap, 0, 0);
