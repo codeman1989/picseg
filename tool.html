@@ -355,7 +355,7 @@
                     // generate a (1, 1, 256, 256) tensor with all values set to 0
                     const maskInput = new ort.Tensor(new Float32Array(256 * 256), [1, 1, 256, 256]);
                     const hasMask = new ort.Tensor(new Float32Array([0]), [1, ]);
-                    const origianlImageSize = new ort.Tensor(new Float32Array([drawWidth, drawHeight]), [2, ]);
+                    const origianlImageSize = new ort.Tensor(new Float32Array([drawHeight,drawWidth]), [2, ]);
                     
               
                     const decodingFeeds = {
