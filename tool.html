@@ -376,7 +376,7 @@
 						console.log('maskImageData',maskImageData);
 						let ctx = canvas.getContext('2d');
 						
-						ctx.putImageData(maskImageData,0,0);
+						//ctx.putImageData(maskImageData,0,0);
 						
 						
 						
@@ -410,10 +410,10 @@
 						context.globalAlpha = 0.3;
 						
 						if(img.width<img.height){
-						//ctx.drawImage(imageBitmap, drawX, drawY, 256,256);
+						ctx.drawImage(imageBitmap, drawX, drawY, 256,256);
 						}else{
 						console.log('there');
-						//ctx.drawImage(imageBitmap, drawX, drawY, 1024/img.width*drawWidth,1024/img.width*drawHeight);
+						ctx.drawImage(imageBitmap, drawX, drawY, 1024/img.width*drawWidth,1024/img.width*drawHeight);
 						}
 						//ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 						
