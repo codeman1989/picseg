@@ -352,13 +352,13 @@
 				  const ibm = await window.createImageBitmap(imageData, 0, 0, imageData.width, imageData.height, {
 					resizeWidth, resizeHeight
 				  })
-				  const canvas = document.createElement('canvas')
-				  canvas.width = resizeWidth
-				  canvas.height = resizeHeight
-				  const ctx = canvas.getContext('2d')
-				  ctx.scale(resizeWidth / imageData.width, resizeHeight / imageData.height)
-				  ctx.drawImage(ibm, 0, 0)
-				  return ctx.getImageData(0, 0, resizeWidth, resizeHeight)
+				  const canvasq = document.createElement('canvas')
+				  canvasq.width = resizeWidth
+				  canvasq.height = resizeHeight
+				  const ctxq = canvasq.getContext('2d')
+				  ctxq.scale(resizeWidth / imageData.width, resizeHeight / imageData.height)
+				  ctxq.drawImage(ibm, 0, 0)
+				  return ctxq.getImageData(0, 0, resizeWidth, resizeHeight)
 				}
                 async function decode() {
                     let context = canvas.getContext('2d');
