@@ -410,14 +410,14 @@
 						context.globalAlpha = 0.3;
 						
 						if(img.width<img.height){
-						ctx.drawImage(imageBitmap, drawX, drawY, 1024/img.height*drawWidth,1024/img.height*drawHeight);
+						ctx.drawImage(imageBitmap, drawX, drawY, 1024/img.width*drawWidth,1024/img.width*drawHeight);
 						}else{
 						console.log('there');
 						ctx.drawImage(imageBitmap, drawX, drawY, 1024/img.width*drawWidth,1024/img.width*drawHeight);
 						}
 						//ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 						
-						console.log('xy',drawY, 1024/img.width*drawWidth,1024/img.width*drawHeight)
+						console.log('xy',drawX,drawY, 1024/img.width*drawWidth,1024/img.width*drawHeight)
                        
                     } catch (error) {
                         console.log(`caught error: ${error}`)
