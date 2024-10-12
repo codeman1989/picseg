@@ -412,7 +412,7 @@
 						
 						let maskImageData_resize = await resizeImageData(maskImageData,drawWidth,drawHeight);
                         // convert image data to image bitmap
-                        let imageBitmap = await createImageBitmap(maskImageData_resize);
+                        let imageBitmap = await createImageBitmap(maskImageData,{resizeWidth: drawWidth, resizeHeight: drawHeight});
 						// 
 						let ctx = canvas.getContext('2d');
 						clearCanvas();
