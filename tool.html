@@ -373,6 +373,7 @@
                         console.log("Generated mask:", results);
                         const mask = results.masks;
                         const maskImageData = await mask.toImageData({ tensorLayout: 'NCWH', format: 'RGB' });
+						console.log('maskImageData',maskImageData);
 						let ctx = canvas.getContext('2d');
 						
 						
@@ -423,10 +424,10 @@
 				async function loadmodel() {
 					$('.ui.dimmer').dimmer('show');
 					session = await ort.InferenceSession.create('https://cdn.picseg.com/vit_t_encoder.onnx', {
-                        executionProviders: ['webgpu', 'cpu']
+                        executionProviders: ['cpu','webgpu']
                     });
 					decodingSession = await ort.InferenceSession.create('https://cdn.picseg.com/vit_t_decoder.onnx', {
-                        executionProviders: ['webgpu', 'cpu']
+                        executionProviders: ['cpu','webgpu']
                     });
 					$('.ui.dimmer').dimmer('hide');
 				}
