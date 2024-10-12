@@ -403,9 +403,9 @@
 						let mask_h = 0;
 						if (canvasWidth / imgAspectRatio > canvasHeight) {
 							mask_w = 1024/img.width*drawWidth;
-							mask_h = 1024/img.height*drawHeight;
+							mask_h = drawHeight;
 						}else{
-							mask_w = 1024/img.width*drawWidth;
+							mask_w = drawWidth;
 							mask_h = 1024/img.height*drawHeight;
 						}
 						
