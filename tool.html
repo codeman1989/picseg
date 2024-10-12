@@ -305,9 +305,17 @@
 					ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 					ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
                     
-                    
+                    // calculate the relative position within the image
+					let x_rel = (x - drawX) / drawWidth;
+					let y_rel = (y - drawY) / drawHeight;
+
+					// calculate the position in the original image
+					let x_img = x_rel * img.width;
+					let y_img = y_rel * img.height; 
+					console.log(x_rel,y_rel,x_img,y_img);
+					
                     if (activeIndex == 3) {
-                        points.push(x, y);
+                        points.push(x_img, y_img);
 						if(event.type == "click"){
 							points_label.push(1);
 							context.fillStyle = 'green';
@@ -319,7 +327,7 @@
                     } else {
                         points = [];
                         points_label = [];
-                        points.push(x, y);
+                        points.push(x_img, y_img);
                         if(event.type == "click"){
 							points_label.push(1);
 							context.fillStyle = 'green';
@@ -331,14 +339,7 @@
 					context.fillRect(x, y, 10, 10);
                     
 					
-					// calculate the relative position within the image
-					let x_rel = (x - drawX) / drawWidth;
-					let y_rel = (y - drawY) / drawHeight;
-
-					// calculate the position in the original image
-					let x_img = x_rel * img.width;
-					let y_img = y_rel * img.height; 
-					console.log(x_rel,y_rel,x_img,y_img);
+					
 
                     decode();
 					
@@ -384,9 +385,9 @@
 						if (canvasWidth / imgAspectRatio < canvasHeight) {
 							drawWidth = canvasWidth;
 							drawHeight = canvasWidth / imgAspectRatio;
-						} else {
-							drawHeight = canvasHeight;
-							drawWidth = canvasHeight * imgAspectRatio;
+							} else {
+								drawHeight = canvasHeight;
+								drawWidth = canvasHeight * imgAspectRatio;
 						}
 						// calculate the starting position
 						let drawX = (canvasWidth - drawWidth) / 2;
