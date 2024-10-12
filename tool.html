@@ -346,6 +346,20 @@
                     decode();
 					
                 }
+				async function resizeImageData (imageData, width, height) {
+				  const resizeWidth = width >> 0
+				  const resizeHeight = height >> 0
+				  const ibm = await window.createImageBitmap(imageData, 0, 0, imageData.width, imageData.height, {
+					resizeWidth, resizeHeight
+				  })
+				  const canvas = document.createElement('canvas')
+				  canvas.width = resizeWidth
+				  canvas.height = resizeHeight
+				  const ctx = canvas.getContext('2d')
+				  ctx.scale(resizeWidth / imageData.width, resizeHeight / imageData.height)
+				  ctx.drawImage(ibm, 0, 0)
+				  return ctx.getImageData(0, 0, resizeWidth, resizeHeight)
+				}
                 async function decode() {
                     let context = canvas.getContext('2d');
                     const pointCoords = new ort.Tensor(new Float32Array(points), [1, points.length / 2, 2]);
@@ -373,8 +387,8 @@
                         const maskImageData = mask.toImageData();
 						
                         console.log(maskImageData);
-                        // convert image data to image bitmap
-                        let imageBitmap = await createImageBitmap(maskImageData);
+						
+						
 						console.log('imageBitmap',imageBitmap);
 						let img = img_save;
 						const scaleX = dimension / img.width;
@@ -395,6 +409,10 @@
 						let drawX = (canvasWidth - drawWidth) / 2;
 						let drawY = (canvasHeight - drawHeight) / 2;
 						
+						
+						let maskImageData_resize = resizeImageData(maskImageData,drawWidth,drawHeight);
+                        // convert image data to image bitmap
+                        let imageBitmap = await createImageBitmap(maskImageData_resize);
 						// 
 						let ctx = canvas.getContext('2d');
 						clearCanvas();
@@ -408,6 +426,8 @@
 							mask_w = drawWidth;
 							mask_h = 1024/img.height*drawHeight;
 						}
+						
+						
 						
 						if(imgAspectRatio==1){
 						drawX = 0;
