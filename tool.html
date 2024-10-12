@@ -397,8 +397,15 @@
 						let ctx = canvas.getContext('2d');
 						clearCanvas();
 						
+						if (canvasWidth / imgAspectRatio < canvasHeight) {
+							let mask_w = 1024/img.width*drawWidth;
+							let mask_h = drawHeight;
+						}else{
+							let mask_w = drawWidth;
+							let mask_h = 1024/img.height*drawHeight;
+						}
 						//ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-						ctx.drawImage(imageBitmap, drawX, drawY, 1024/img.width*drawWidth, 1024/img.height*drawHeight);
+						ctx.drawImage(imageBitmap, drawX, drawY, mask_w, mask_h);
                         //context.drawImage(imageBitmap, 0, 0);
                     } catch (error) {
                         console.log(`caught error: ${error}`)
