@@ -343,24 +343,11 @@
 					
 					
 
-                    decode();
+                    decode(drawWidth,drawHeight);
 					
                 }
-				async function resizeImageData (imageData, width, height) {
-				  const resizeWidth = width >> 0
-				  const resizeHeight = height >> 0
-				  const ibm = await window.createImageBitmap(imageData, 0, 0, imageData.width, imageData.height, {
-					resizeWidth, resizeHeight
-				  })
-				  const canvasq = document.createElement('canvas')
-				  canvasq.width = resizeWidth
-				  canvasq.height = resizeHeight
-				  const ctxq = canvasq.getContext('2d')
-				  ctxq.scale(resizeWidth / imageData.width, resizeHeight / imageData.height)
-				  ctxq.drawImage(ibm, 0, 0)
-				  return ctxq.getImageData(0, 0, resizeWidth, resizeHeight)
-				}
-                async function decode() {
+				
+                async function decode(drawWidth,drawHeight) {
                     let context = canvas.getContext('2d');
 					let img = img_save;
                     const pointCoords = new ort.Tensor(new Float32Array(points), [1, points.length / 2, 2]);
@@ -368,10 +355,24 @@
                     // generate a (1, 1, 256, 256) tensor with all values set to 0
                     const maskInput = new ort.Tensor(new Float32Array(256 * 256), [1, 1, 256, 256]);
                     const hasMask = new ort.Tensor(new Float32Array([0]), [1, ]);
+                    const origianlImageSize = new ort.Tensor(new Float32Array([drawWidth, drawHeight]), [2, ]);
                     
+              
+                    const decodingFeeds = {
+                        "image_embedding": image_embeddings,
+                        "point_coords": pointCoords,
+                        "point_labels": pointLabels,
+                        "mask_input": maskInput,
+                        "has_mask_input": hasMask,
+                        "orig_im_size": origianlImageSize
+                    }
+                    console.log("generating mask...");
                     start = Date.now();
                     try {
-						
+                        results = await decodingSession.run(decodingFeeds);
+                        console.log("Generated mask:", results);
+                        const mask = results.masks;
+                        const maskImageData = await mask.toImageData({ tensorLayout: 'NCWH', format: 'RGB' });
 						let ctx = canvas.getContext('2d');
 						
 						
@@ -398,22 +399,6 @@
 						let drawX = (canvasWidth - drawWidth) / 2;
 						let drawY = (canvasHeight - drawHeight) / 2;
 						
-						const origianlImageSize = new ort.Tensor(new Float32Array([drawWidth, drawHeight]), [2, ]);
-                    
-				  
-						const decodingFeeds = {
-							"image_embedding": image_embeddings,
-							"point_coords": pointCoords,
-							"point_labels": pointLabels,
-							"mask_input": maskInput,
-							"has_mask_input": hasMask,
-							"orig_im_size": origianlImageSize
-						}
-						console.log("generating mask...");
-                        results = await decodingSession.run(decodingFeeds);
-                        console.log("Generated mask:", results);
-                        const mask = results.masks;
-                        const maskImageData = await mask.toImageData({ tensorLayout: 'NCWH', format: 'RGB' });
 						
 						
                         // convert image data to image bitmap
@@ -424,7 +409,7 @@
 						context.globalAlpha = 0.3;
 						
 					
-				
+						//ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 						ctx.drawImage(imageBitmap, drawX, drawY, drawWidth, drawHeight);
                        
                     } catch (error) {
@@ -438,10 +423,10 @@
 				async function loadmodel() {
 					$('.ui.dimmer').dimmer('show');
 					session = await ort.InferenceSession.create('https://cdn.picseg.com/vit_t_encoder.onnx', {
-                        executionProviders: ['CUDAExecutionProvider', 'CPUExecutionProvider']
+                        executionProviders: ['webgpu', 'cpu']
                     });
 					decodingSession = await ort.InferenceSession.create('https://cdn.picseg.com/vit_t_decoder.onnx', {
-                        executionProviders: ['CUDAExecutionProvider', 'CPUExecutionProvider']
+                        executionProviders: ['webgpu', 'cpu']
                     });
 					$('.ui.dimmer').dimmer('hide');
 				}
