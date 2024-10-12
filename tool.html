@@ -372,7 +372,7 @@
                         const mask = results.masks;
                         const maskImageData = mask.toImageData();
 						
-                        
+                        console.log(maskImageData);
                         // convert image data to image bitmap
                         let imageBitmap = await createImageBitmap(maskImageData);
 						console.log('imageBitmap',imageBitmap);
