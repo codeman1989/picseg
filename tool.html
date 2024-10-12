@@ -275,86 +275,87 @@ $(document).ready(function() {
     }
 
     async function handleClick(event) {
-        event.preventDefault();
+    event.preventDefault();
 
-        let img = img_save;
-        const scaleX = dimension / img.width;
-        const scaleY = dimension / img.height;
-        let canvasWidth = canvas.width;
-        let canvasHeight = canvas.height;
-        let imgAspectRatio = img.width / img.height;
-        // calculate the drawing dimensions
+    let img = img_save;
+    let canvasWidth = canvas.width;
+    let canvasHeight = canvas.height;
+    let imgAspectRatio = img.width / img.height;
 
-        if (canvasWidth / imgAspectRatio < canvasHeight) {
-            drawWidth = canvasWidth;
-            drawHeight = canvasWidth / imgAspectRatio;
-        } else {
-            drawHeight = canvasHeight;
-            drawWidth = canvasHeight * imgAspectRatio;
-        }
-        // calculate the starting position
-        drawX = (canvasWidth - drawWidth) / 2;
+    // calculate the drawing dimensions
+    let drawWidth, drawHeight, drawX, drawY;
+
+    if (imgAspectRatio > canvasWidth / canvasHeight) {
+        drawWidth = canvasWidth;
+        drawHeight = drawWidth / imgAspectRatio;
+        drawX = 0;
         drawY = (canvasHeight - drawHeight) / 2;
-
-        const rect = canvas.getBoundingClientRect();
-        const x = (event.clientX - rect.left);
-        const y = (event.clientY - rect.top);
-
-        let clickX = x - drawX;
-        let clickY = y - drawY;
-
-        // Set the resulting coordinates to -1 if the click is outside the image
-        if (clickX < 0 || clickY < 0 || clickX > drawWidth || clickY > drawHeight) {
-            clickX = 0;
-            clickY = 0;
-        }
-
-        // convert click coordinates to image space (assuming the image is square)
-        let imageX, imageY;
-
-        // Only calculate the image coordinates if the click was inside the image
-        if (clickX != -1 && clickY != -1) {
-            // Assuming the image has been resized to a square
-            let imageSize = Math.min(img.width, img.height);
-            let scale = drawWidth / imageSize;
-
-            imageX = clickX / scale;
-            imageY = clickY / scale;
-        }
-
-        console.log('Clicked position:', x, y);
-        document.getElementById("status").textContent = `Clicked on (${x}, ${y}). Downloading the decoder model if needed and generating mask...`;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        console.log(img, drawX, drawY, drawWidth, drawHeight);
-        ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
-
-        if (activeIndex == 3) {
-            points.push(clickX, clickY);
-            if (event.type == "click") {
-                points_label.push(1);
-                ctx.fillStyle = 'green';
-            } else {
-                points_label.push(0);
-                ctx.fillStyle = 'blue';
-            }
-        } else {
-            points = [];
-            points_label = [];
-            points.push(clickX, clickY);
-            if (event.type == "click") {
-                points_label.push(1);
-                ctx.fillStyle = 'green';
-            } else {
-                points_label.push(0);
-                ctx.fillStyle = 'blue';
-            }
-        }
-        ctx.fillRect(x, y, 10, 10);
-
-        decode();
+    } else {
+        drawHeight = canvasHeight;
+        drawWidth = drawHeight * imgAspectRatio;
+        drawX = (canvasWidth - drawWidth) / 2;
+        drawY = 0;
     }
+
+    const rect = canvas.getBoundingClientRect();
+    const x = (event.clientX - rect.left);
+    const y = (event.clientY - rect.top);
+
+    let clickX = x - drawX;
+    let clickY = y - drawY;
+
+    // Set the resulting coordinates to -1 if the click is outside the image
+    if (clickX < 0 || clickY < 0 || clickX > drawWidth || clickY > drawHeight) {
+        clickX = 0;
+        clickY = 0;
+    }
+
+    // convert click coordinates to image space (assuming the image is square)
+    let imageX, imageY;
+
+    // Only calculate the image coordinates if the click was inside the image
+    if (clickX != -1 && clickY != -1) {
+        // Assuming the image has been resized to a square
+        let imageSize = Math.min(img.width, img.height);
+        let scale = drawWidth / imageSize;
+
+        imageX = clickX / scale;
+        imageY = clickY / scale;
+    }
+
+    console.log('Clicked position:', x, y);
+    document.getElementById("status").textContent = `Clicked on (${x}, ${y}). Downloading the decoder model if needed and generating mask...`;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    console.log(img, drawX, drawY, drawWidth, drawHeight);
+    ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+
+    if (activeIndex == 3) {
+        points.push(clickX, clickY);
+        if (event.type == "click") {
+            points_label.push(1);
+            ctx.fillStyle = 'green';
+        } else {
+            points_label.push(0);
+            ctx.fillStyle = 'blue';
+        }
+    } else {
+        points = [];
+        points_label = [];
+        points.push(clickX, clickY);
+        if (event.type == "click") {
+            points_label.push(1);
+            ctx.fillStyle = 'green';
+        } else {
+            points_label.push(0);
+            ctx.fillStyle = 'blue';
+        }
+    }
+    ctx.fillRect(x, y, 10, 10);
+
+    decode();
+}
 
     async function decode() {
         const pointCoords = new ort.Tensor(new Float32Array(points), [1, points.length / 2, 2]);
