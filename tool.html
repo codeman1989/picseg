@@ -362,12 +362,13 @@
 				}
                 async function decode() {
                     let context = canvas.getContext('2d');
+					let img = img_save;
                     const pointCoords = new ort.Tensor(new Float32Array(points), [1, points.length / 2, 2]);
                     const pointLabels = new ort.Tensor(new Float32Array(points_label), [1, points_label.length]);
                     // generate a (1, 1, 256, 256) tensor with all values set to 0
                     const maskInput = new ort.Tensor(new Float32Array(256 * 256), [1, 1, 256, 256]);
                     const hasMask = new ort.Tensor(new Float32Array([0]), [1, ]);
-                    const origianlImageSize = new ort.Tensor(new Float32Array([1024, 1024]), [2, ]);
+                    const origianlImageSize = new ort.Tensor(new Float32Array([img.width, img.height]), [2, ]);
                     
               
                     const decodingFeeds = {
@@ -387,12 +388,12 @@
                         const maskImageData = await mask.toImageData({ tensorLayout: 'NCWH', format: 'RGB' });
 						let ctx = canvas.getContext('2d');
 						
-						//ctx.putImageData(, 0, 0);
 						
 						
 						
 						
-						let img = img_save;
+						
+						
 						const scaleX = dimension / img.width;
 						const scaleY = dimension / img.height;
 						let canvasWidth = canvas.width;
@@ -422,7 +423,7 @@
 						
 						console.log(imageBitmap,parseInt(drawX), parseInt(drawY), parseInt(drawWidth), parseInt(drawHeight));
 						//ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-						ctx.drawImage(maskImageData, drawX, drawY, drawWidth, drawHeight);
+						ctx.drawImage(imageBitmap, drawX, drawY, drawWidth, drawHeight);
                         //context.drawImage(imageBitmap, 0, 0);
                     } catch (error) {
                         console.log(`caught error: ${error}`)
