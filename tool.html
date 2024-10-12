@@ -371,10 +371,7 @@
                     
                     start = Date.now();
                     try {
-                        results = await decodingSession.run(decodingFeeds);
-                        console.log("Generated mask:", results);
-                        const mask = results.masks;
-                        const maskImageData = await mask.toImageData({ tensorLayout: 'NCWH', format: 'RGB' });
+						
 						let ctx = canvas.getContext('2d');
 						
 						
@@ -401,7 +398,6 @@
 						let drawX = (canvasWidth - drawWidth) / 2;
 						let drawY = (canvasHeight - drawHeight) / 2;
 						
-						
 						const origianlImageSize = new ort.Tensor(new Float32Array([drawWidth, drawHeight]), [2, ]);
                     
 				  
@@ -414,6 +410,11 @@
 							"orig_im_size": origianlImageSize
 						}
 						console.log("generating mask...");
+                        results = await decodingSession.run(decodingFeeds);
+                        console.log("Generated mask:", results);
+                        const mask = results.masks;
+                        const maskImageData = await mask.toImageData({ tensorLayout: 'NCWH', format: 'RGB' });
+						
 						
                         // convert image data to image bitmap
                         let imageBitmap = await createImageBitmap(maskImageData);
