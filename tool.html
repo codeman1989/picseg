@@ -437,10 +437,10 @@
 				async function loadmodel() {
 					$('.ui.dimmer').dimmer('show');
 					session = await ort.InferenceSession.create('https://cdn.picseg.com/vit_t_encoder.onnx', {
-                        executionProviders: ['webgpu', 'cpu']
+                        executionProviders: ['CUDAExecutionProvider', 'CPUExecutionProvider']
                     });
 					decodingSession = await ort.InferenceSession.create('https://cdn.picseg.com/vit_t_decoder.onnx', {
-                        executionProviders: ['webgpu', 'cpu']
+                        executionProviders: ['CUDAExecutionProvider', 'CPUExecutionProvider']
                     });
 					$('.ui.dimmer').dimmer('hide');
 				}
