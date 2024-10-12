@@ -384,7 +384,7 @@
                         results = await decodingSession.run(decodingFeeds);
                         console.log("Generated mask:", results);
                         const mask = results.masks;
-                        const maskImageData = mask.toImageData();
+                        const maskImageData = await mask.toImageData();
 						
                         console.log(maskImageData);
 						
