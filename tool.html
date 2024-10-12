@@ -412,6 +412,7 @@
 					
 						//ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 						ctx.drawImage(imageBitmap, drawX, drawY, 1024/img.width*drawWidth,1024/img.width*drawHeight);
+						console.log('xy',drawY, 1024/img.width*drawWidth,1024/img.width*drawHeight)
                        
                     } catch (error) {
                         console.log(`caught error: ${error}`)
