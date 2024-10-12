@@ -400,13 +400,13 @@
 						let mask_h = 0;
 						if (canvasWidth / imgAspectRatio > canvasHeight) {
 							mask_w = 1024/img.width*drawWidth;
-							mask_h = drawHeight;
+							mask_h = 1024/img.height/drawHeight;
 						}else{
-							mask_w = drawWidth;
+							mask_w = 1024/img.width/drawWidth;
 							mask_h = 1024/img.height*drawHeight;
 						}
 						//ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-						ctx.drawImage(imageBitmap, drawX, drawY, 1024/img.width*drawWidth, 1024/img.height*drawHeight);
+						ctx.drawImage(imageBitmap, drawX, drawY, mask_w, mask_h);
                         //context.drawImage(imageBitmap, 0, 0);
                     } catch (error) {
                         console.log(`caught error: ${error}`)
