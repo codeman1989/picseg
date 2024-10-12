@@ -397,7 +397,7 @@
 						let ctx = canvas.getContext('2d');
 						clearCanvas();
 						
-						if (canvasWidth / imgAspectRatio < canvasHeight) {
+						if (canvasWidth / imgAspectRatio > canvasHeight) {
 							let mask_w = 1024/img.width*drawWidth;
 							let mask_h = drawHeight;
 						}else{
