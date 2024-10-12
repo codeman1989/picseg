@@ -368,18 +368,7 @@
                     // generate a (1, 1, 256, 256) tensor with all values set to 0
                     const maskInput = new ort.Tensor(new Float32Array(256 * 256), [1, 1, 256, 256]);
                     const hasMask = new ort.Tensor(new Float32Array([0]), [1, ]);
-                    const origianlImageSize = new ort.Tensor(new Float32Array([img.width, img.height]), [2, ]);
                     
-              
-                    const decodingFeeds = {
-                        "image_embedding": image_embeddings,
-                        "point_coords": pointCoords,
-                        "point_labels": pointLabels,
-                        "mask_input": maskInput,
-                        "has_mask_input": hasMask,
-                        "orig_im_size": origianlImageSize
-                    }
-                    console.log("generating mask...");
                     start = Date.now();
                     try {
                         results = await decodingSession.run(decodingFeeds);
@@ -413,6 +402,18 @@
 						let drawY = (canvasHeight - drawHeight) / 2;
 						
 						
+						const origianlImageSize = new ort.Tensor(new Float32Array([drawWidth, drawHeight]), [2, ]);
+                    
+				  
+						const decodingFeeds = {
+							"image_embedding": image_embeddings,
+							"point_coords": pointCoords,
+							"point_labels": pointLabels,
+							"mask_input": maskInput,
+							"has_mask_input": hasMask,
+							"orig_im_size": origianlImageSize
+						}
+						console.log("generating mask...");
 						
                         // convert image data to image bitmap
                         let imageBitmap = await createImageBitmap(maskImageData);
@@ -421,10 +422,10 @@
 						clearCanvas();
 						context.globalAlpha = 0.3;
 						
-						console.log(imageBitmap,parseInt(drawX), parseInt(drawY), parseInt(drawWidth), parseInt(drawHeight));
-						//ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+					
+				
 						ctx.drawImage(imageBitmap, drawX, drawY, drawWidth, drawHeight);
-                        //context.drawImage(imageBitmap, 0, 0);
+                       
                     } catch (error) {
                         console.log(`caught error: ${error}`)
                     }
