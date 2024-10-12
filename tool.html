@@ -392,38 +392,7 @@
 						
 						
 						
-						let img = img_save;
-						const scaleX = dimension / img.width;
-						const scaleY = dimension / img.height;
-						let canvasWidth = canvas.width;
-						let canvasHeight = canvas.height;
-						let imgAspectRatio = img.width / img.height;
-						// calculate the drawing dimensions
-						let drawWidth, drawHeight;
-						if (canvasWidth / imgAspectRatio < canvasHeight) {
-							drawWidth = canvasWidth;
-							drawHeight = canvasWidth / imgAspectRatio;
-							} else {
-								drawHeight = canvasHeight;
-								drawWidth = canvasHeight * imgAspectRatio;
-						}
-						// calculate the starting position
-						let drawX = (canvasWidth - drawWidth) / 2;
-						let drawY = (canvasHeight - drawHeight) / 2;
 						
-						
-						
-                        // convert image data to image bitmap
-                        let imageBitmap = await createImageBitmap(maskImageData);
-						// 
-						
-						clearCanvas();
-						context.globalAlpha = 0.3;
-						
-						console.log(imageBitmap,parseInt(drawX), parseInt(drawY), parseInt(drawWidth), parseInt(drawHeight));
-						//ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-						ctx.drawImage(imageBitmap, drawX, drawY, drawWidth, drawHeight);
-                        //context.drawImage(imageBitmap, 0, 0);
                     } catch (error) {
                         console.log(`caught error: ${error}`)
                     }
