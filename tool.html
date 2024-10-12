@@ -384,9 +384,11 @@
                         results = await decodingSession.run(decodingFeeds);
                         console.log("Generated mask:", results);
                         const mask = results.masks;
-                        const maskImageData = await mask.toImageData();
+                        const maskImageData = await mask.toImageData({ tensorLayout: 'NCWH', format: 'RGB' });
+						let ctx = canvas.getContext('2d');
 						
-                        console.log(maskImageData);
+						ctx.putImageData(maskImageData, 0, 0);
+						
 						
 						
 						
@@ -412,9 +414,9 @@
 						
 						
                         // convert image data to image bitmap
-                        let imageBitmap = await createImageBitmap(maskImageData,{resizeWidth: drawWidth, resizeHeight: drawHeight});
+                        let imageBitmap = await createImageBitmap(maskImageData);
 						// 
-						let ctx = canvas.getContext('2d');
+						
 						clearCanvas();
 						context.globalAlpha = 0.3;
 						
