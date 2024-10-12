@@ -281,20 +281,21 @@ $(document).ready(function() {
     let canvasWidth = canvas.width;
     let canvasHeight = canvas.height;
     let imgAspectRatio = img.width / img.height;
+    let canvasAspectRatio = canvasWidth / canvasHeight;
 
     // calculate the drawing dimensions
     let drawWidth, drawHeight, drawX, drawY;
 
-    if (imgAspectRatio > canvasWidth / canvasHeight) {
-        drawWidth = canvasWidth;
-        drawHeight = drawWidth / imgAspectRatio;
-        drawX = 0;
-        drawY = (canvasHeight - drawHeight) / 2;
-    } else {
+    if (imgAspectRatio > canvasAspectRatio) {
         drawHeight = canvasHeight;
         drawWidth = drawHeight * imgAspectRatio;
         drawX = (canvasWidth - drawWidth) / 2;
         drawY = 0;
+    } else {
+        drawWidth = canvasWidth;
+        drawHeight = drawWidth / imgAspectRatio;
+        drawX = 0;
+        drawY = (canvasHeight - drawHeight) / 2;
     }
 
     const rect = canvas.getBoundingClientRect();
@@ -310,18 +311,9 @@ $(document).ready(function() {
         clickY = 0;
     }
 
-    // convert click coordinates to image space (assuming the image is square)
-    let imageX, imageY;
-
-    // Only calculate the image coordinates if the click was inside the image
-    if (clickX != -1 && clickY != -1) {
-        // Assuming the image has been resized to a square
-        let imageSize = Math.min(img.width, img.height);
-        let scale = drawWidth / imageSize;
-
-        imageX = clickX / scale;
-        imageY = clickY / scale;
-    }
+    // convert click coordinates to image space
+    let imageX = clickX * (img.width / drawWidth);
+    let imageY = clickY * (img.height / drawHeight);
 
     console.log('Clicked position:', x, y);
     document.getElementById("status").textContent = `Clicked on (${x}, ${y}). Downloading the decoder model if needed and generating mask...`;
@@ -356,6 +348,7 @@ $(document).ready(function() {
 
     decode();
 }
+
 
     async function decode() {
         const pointCoords = new ort.Tensor(new Float32Array(points), [1, points.length / 2, 2]);
