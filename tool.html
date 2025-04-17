@@ -170,7 +170,7 @@
 
                 canvas.width = canvasWidth;
                 canvas.height = canvasHeight;
-                return { canvasWidth, canvasHeight };
+                return { canvasWidth, canvasHeight, imgWidth: img.width, imgHeight: img.height };
             }
 
             function drawImage(img) {
@@ -181,7 +181,7 @@
 
             function clearCanvas() {
                 document.getElementById("status").textContent = `Clear All`;
-                drawImage(img_save);
+                if (img_save) drawImage(img_save);
             }
 
             async function loadModel() {
@@ -226,12 +226,12 @@
             }
 
             async function decode() {
-                const { canvasWidth, canvasHeight } = resizeCanvasAndImage(img_save);
+                const { canvasWidth, canvasHeight, imgWidth, imgHeight } = resizeCanvasAndImage(img_save);
                 const pointCoords = new ort.Tensor(new Float32Array(points), [1, points.length / 2, 2]);
-                const pointLabels = new ort.Tensor(new Float32Array(points_label), [1, points_label.length]);
+                const pointLabels = new ort.Tensor(new Float32Array(points_label), [1, points.length]);
                 const maskInput = new ort.Tensor(new Float32Array(256 * 256), [1, 1, 256, 256]);
                 const hasMask = new ort.Tensor(new Float32Array([0]), [1]);
-                const originalImageSize = new ort.Tensor(new Float32Array([img_save.height, img_save.width]), [2]);
+                const originalImageSize = new ort.Tensor(new Float32Array([imgHeight, imgWidth]), [2]);
 
                 const decodingFeeds = {
                     "image_embedding": image_embeddings,
@@ -263,25 +263,29 @@
             }
 
             function renderPoints() {
-                const { canvasWidth, canvasHeight } = resizeCanvasAndImage(img_save);
+                const { canvasWidth, canvasHeight, imgWidth, imgHeight } = resizeCanvasAndImage(img_save);
                 for (let i = 0; i < points.length; i += 2) {
-                    const x = (points[i] / img_save.width) * canvasWidth;
-                    const y = (points[i + 1] / img_save.height) * canvasHeight;
+                    const x = (points[i] / imgWidth) * canvasWidth;
+                    const y = (points[i + 1] / imgHeight) * canvasHeight;
                     ctx.fillStyle = points_label[i / 2] === 0 ? 'blue' : 'green';
                     ctx.fillRect(x - 5, y - 5, 10, 10);
+                    console.log(`Drawing point ${i/2}: image(${points[i]},${points[i+1]}), canvas(${x},${y})`);
                 }
             }
 
             async function handleClick(event) {
                 event.preventDefault();
-                const { canvasWidth, canvasHeight } = resizeCanvasAndImage(img_save);
+                if (!img_save) return;
+
+                const { canvasWidth, canvasHeight, imgWidth, imgHeight } = resizeCanvasAndImage(img_save);
                 const rect = canvas.getBoundingClientRect();
                 const x = event.clientX - rect.left;
                 const y = event.clientY - rect.top;
 
-                const x_img = (x / canvasWidth) * img_save.width;
-                const y_img = (y / canvasHeight) * img_save.height;
+                const x_img = (x / canvasWidth) * imgWidth;
+                const y_img = (y / canvasHeight) * imgHeight;
 
+                console.log(`Click: canvas(${x},${y}), image(${x_img},${y_img}), imageSize(${imgWidth},${imgHeight})`);
                 document.getElementById("status").textContent = `Clicked on (${x.toFixed(2)}, ${y.toFixed(2)}). Generating mask...`;
 
                 if (activeIndex === 1) { // Multi Point mode
